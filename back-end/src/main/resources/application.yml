@@ -1,0 +1,18 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: "SoundWave"
+  data:
+    mongodb:
+      host: localhost
+      uri: mongodb://admin:admin@SoundWave-DB:27017/SoundWave?authSource=admin
+
+      port: 27017
+      database: SoundWave
+      username: admin
+      password: admin
+      authentication-database: admin
+  profiles:
+    active: "prod"
