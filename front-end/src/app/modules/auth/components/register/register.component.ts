@@ -30,7 +30,6 @@ export class RegisterComponent {
 
   }
 
-  ngOnInit(): void {}
 
   onRegister(): void {
     const { username, password, password_confirmation, isAdmin, isUser } = this.registerForm.value;
