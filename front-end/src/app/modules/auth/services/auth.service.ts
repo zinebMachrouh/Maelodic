@@ -19,10 +19,8 @@ export class AuthService {
     }
   }
 
-  register(user: any): Subscription {
-    return this.http.post(`${this.API_URL}/register`, user).subscribe(() => {
-      return true;
-    });
+  register(user: any): Observable<any> {
+    return this.http.post(`${this.API_URL}/register`, user);
   }
 
   login(loginRequest: { username: string; password: string }): Observable<any> {
@@ -38,9 +36,17 @@ export class AuthService {
   }
 
   logout(): void {
-    this.http.post(`${this.API_URL}/logout`, {}).subscribe(() => {
-      this.clearToken();
-      this.currentUserSubject.next(null);
+    this.http.post(`${this.API_URL}/logout`, {}).subscribe({
+      next: () => {
+        this.clearToken();
+        this.currentUserSubject.next(null);
+      },
+      error: (error) => {
+        console.error('Logout failed:', error);
+        // Still clear local data even if the server request fails
+        this.clearToken();
+        this.currentUserSubject.next(null);
+      }
     });
   }
 
@@ -57,11 +63,31 @@ export class AuthService {
   }
 
   private decodeAndSetUser(token: string): void {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    this.currentUserSubject.next(payload);
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      this.currentUserSubject.next(payload);
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      this.clearToken();
+      this.currentUserSubject.next(null);
+    }
   }
 
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    const token = this.getToken();
+    if (!token) return false;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expirationDate = new Date(payload.exp * 1000);
+      if (expirationDate < new Date()) {
+        this.clearToken();
+        return false;
+      }
+      return true;
+    } catch {
+      this.clearToken();
+      return false;
+    }
   }
 }

@@ -8,12 +8,12 @@
     </h2>
     <form (ngSubmit)="onSubmit()" [formGroup]="loginForm" class="form">
       <div class="input-group">
-        <label for="email">Email</label>
+        <label for="username">Username</label>
         <input
-          type="email"
-          id="email"
-          formControlName="email"
-          placeholder="Enter Email"
+          type="text"
+          id="username"
+          formControlName="username"
+          placeholder="Enter Username"
           required>
       </div>
       <div class="input-group">
@@ -29,8 +29,7 @@
         <label for="remember_me" class="remember">
           <input
             id="remember_me"
-            type="checkbox"
-            formControlName="rememberMe">
+            type="checkbox"/>
           <span>Remember me</span>
         </label>
         <div class="forgot">
