@@ -33,11 +33,17 @@ export class AlbumListComponent implements OnInit{
   selectedAlbum: Album | null = null;
   isAdmin: boolean = false;
 
+  currentPage: number = 0;
+  pageSize: number = 10;
+  totalPages: number = 0;
+
   constructor(
     private authService: AuthService,
     private trackPlayService: TrackPlayService,
     private albumService: AlbumService
-  ) {}
+  ) {
+    this.isAdmin = this.authService.isAdmin();
+  }
 
   ngOnInit(): void {
     this.trackPlayService.username$.subscribe((username) => {
@@ -45,18 +51,19 @@ export class AlbumListComponent implements OnInit{
     });
 
     this.isAdmin = this.authService.isAdmin();
+    console.log('Is Admin:', this.isAdmin);
 
     this.fetchAlbums();
   }
 
   private fetchAlbums(): void {
     this.isLoading = true;
-    this.albumService.getAlbums(0, 10).subscribe({
+    this.albumService.getAlbums(this.currentPage, this.pageSize).subscribe({
       next: (response) => {
         this.albums = response.content;
         this.albumsCount = response.totalElements;
+        this.totalPages = Math.ceil(response.totalElements / this.pageSize);
         this.isLoading = false;
-        console.log('Error fetching albums:', response.content);
       },
       error: (err) => {
         console.error('Error fetching albums:', err);
@@ -67,11 +74,17 @@ export class AlbumListComponent implements OnInit{
   }
 
   public prevPage(): void {
-    console.log('Previous page');
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.fetchAlbums();
+    }
   }
 
   public nextPage(): void {
-    console.log('Next page');
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.fetchAlbums();
+    }
   }
 
   onCloseModal(): void {

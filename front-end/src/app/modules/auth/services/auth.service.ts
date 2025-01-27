@@ -93,9 +93,9 @@ export class AuthService {
 
   public isAdmin(): boolean {
     const user = this.currentUserSubject.getValue();
-    if (user) {
-      return user.roles.includes('ADMIN');
-    }else {
+    if (user && user.roles) {
+      return user.roles.some((role: { name: string }) => role.name === 'ADMIN');
+    } else {
       return false;
     }
   }

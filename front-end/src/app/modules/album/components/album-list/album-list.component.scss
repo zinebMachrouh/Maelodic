@@ -84,20 +84,57 @@
     }
   }
 
-  .albums{
+  .albums {
     margin-top: 2rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.3rem;
+    height: 67vh;
     width: 100%;
-    height: 72vh;
-    overflow-y:scroll !important;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    .album-list {
+      display: flex;
+      flex-wrap: wrap !important;
+      gap: 1.3rem;
+      width: 100% !important;
+      height: 100% !important;
+      overflow-y: auto;
+
+
+      div {
+        width: 220px;
+        height: fit-content;
+      }
+    }
+
+
 
     ::-webkit-scrollbar{
       width: 0;
       height: 0;
+    }
+  }
+
+  .pagination{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+
+    button{
+      background: transparent;
+      border: none;
+      color: var(--isabelline);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0.5rem;
+      transition: all ease-in-out 0.3s;
+
+      &:hover{
+        color: var(--seasalt);
+      }
     }
   }
 }

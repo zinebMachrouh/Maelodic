@@ -28,6 +28,19 @@
       font-size: 1.1rem;
       color: var(--isabelline);
       font-weight: 500;
+
+      button{
+        background-color: transparent;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        color: var(--isabelline);
+
+        &:hover{
+          text-decoration: underline;
+        }
+      }
+
     }
 
     p{

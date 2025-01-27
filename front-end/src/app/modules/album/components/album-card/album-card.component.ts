@@ -13,6 +13,7 @@ export class AlbumCardComponent {
   @Input() album!: Album;
   @Output() delete = new EventEmitter();
   @Output() edit = new EventEmitter<unknown>();
+  @Input() isAdmin!: boolean;
 
   constructor(private albumService: AlbumService) {
   }
