@@ -1,0 +1,12 @@
+<div class="album-card">
+  <div class="album-card-cover">
+    <img src="/assets/album.png" [alt]="album.title">
+  </div>
+  <div class="album-card-info">
+    <h4 (click)="onEdit()">{{album.title}}</h4>
+    <p>{{album.year}} • {{album.artist}}</p>
+  </div>
+  <div class="album-details">
+    <button type="button" (click)="onDelete()"><i class="fa-solid fa-trash"></i></button>
+  </div>
+</div>

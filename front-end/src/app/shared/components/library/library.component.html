@@ -2,11 +2,11 @@
   <div id="main">
     <header>
       <nav>
-        <a routerLink="/library" routerLinkActive="active"><i class="fa-solid fa-house"></i> Home</a>
-        <a routerLink="/songs"><i class="fa-solid fa-music"></i> Songs</a>
-        <a routerLink="/songs"><i class="fa-solid fa-microphone"></i> Artists</a>
-        <a routerLink="/songs"><i class="fa-solid fa-record-vinyl"></i> Albums</a>
+        <a routerLink="/library"><i class="fa-solid fa-house"></i> Home</a>
+        <a routerLink="tracks" routerLinkActive="active"><i class="fa-solid fa-music"></i> Songs</a>
+        <a routerLink="albums" routerLinkActive="active"><i class="fa-solid fa-record-vinyl"></i> Albums</a>
         <a routerLink="/"><i class="fa-solid fa-podcast"></i> Podcasts</a>
+        <a routerLink="#" (click)="logout()"><i class="fa-solid fa-right-from-bracket"></i> LogOut</a>
       </nav>
       <div class="collections">
         <div class="c-top">
@@ -63,7 +63,7 @@
       </div>
     </header>
     <main>
-      <app-track-list (playTrack)="onPlayTrack($event)"></app-track-list>
+      <router-outlet></router-outlet>
     </main>
   </div>
   <div id="app-player">
