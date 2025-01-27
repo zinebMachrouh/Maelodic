@@ -39,7 +39,6 @@ class AlbumServiceImplTest {
                 .id("1")
                 .title("Test Album")
                 .artist("Test Artist")
-                .genre("Rock")
                 .year(2020)
                 .build();
 
@@ -47,7 +46,6 @@ class AlbumServiceImplTest {
                 .id("1")
                 .title("Test Album")
                 .artist("Test Artist")
-                .genre("Rock")
                 .year(2020)
                 .build();
     }

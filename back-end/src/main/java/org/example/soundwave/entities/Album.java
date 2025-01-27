@@ -23,8 +23,6 @@ public class Album {
 
     private String artist;
 
-    private String genre;
-
     private int year;
 
     @DocumentReference(lazy = true)

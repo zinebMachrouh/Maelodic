@@ -3,6 +3,7 @@ package org.example.soundwave.controllers;
 import lombok.AllArgsConstructor;
 import org.example.soundwave.dto.AlbumDTO;
 import org.example.soundwave.services.AlbumService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1")

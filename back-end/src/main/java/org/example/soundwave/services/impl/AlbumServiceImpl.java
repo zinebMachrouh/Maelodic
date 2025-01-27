@@ -54,7 +54,6 @@ public class AlbumServiceImpl implements AlbumService {
         // Update the fields from DTO
         album.setTitle(albumDTO.getTitle());
         album.setArtist(albumDTO.getArtist());
-        album.setGenre(albumDTO.getGenre());
         album.setYear(albumDTO.getYear());
 
         Album updatedAlbum = albumRepository.save(album);
@@ -74,7 +73,6 @@ public class AlbumServiceImpl implements AlbumService {
                 .id(album.getId())
                 .title(album.getTitle())
                 .artist(album.getArtist())
-                .genre(album.getGenre())
                 .year(album.getYear())
                 .build();
     }
@@ -84,7 +82,6 @@ public class AlbumServiceImpl implements AlbumService {
                 .id(album.getId())
                 .title(album.getTitle())
                 .artist(album.getArtist())
-                .genre(album.getGenre())
                 .year(album.getYear())
                 .build();
     }

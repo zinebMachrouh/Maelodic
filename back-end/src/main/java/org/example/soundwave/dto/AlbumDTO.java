@@ -26,10 +26,6 @@ public class AlbumDTO {
     @Size(min = 3, max = 50, message = "Artist must be between 3 and 50 characters")
     private String artist;
 
-    @NotBlank(message = "Genre is required")
-    @Size(min = 3, max = 50, message = "Genre must be between 3 and 50 characters")
-    private String genre;
-
     @NotNull(message = "Year is required")
     @Min(value = 1900, message = "Year must be greater than 1900")
     private int year;

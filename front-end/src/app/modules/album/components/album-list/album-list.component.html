@@ -1,0 +1,56 @@
+<div id="app-track-list">
+  <header>
+    <h4>Welcome back, {{username}}! <br>
+      <span>{{albumsCount}} albums for you</span>
+    </h4>
+
+    <div class="search">
+      <button type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
+      <input type="text" placeholder="Search by title, artist or year..." [formControl]="searchControl">
+    </div>
+
+    <div class="h-actions">
+      <button type="button" routerLink="settings" title="settings"><i class="fa-solid fa-sliders"></i></button>
+      <button type="button" title="add album" (click)="openModal()" [disabled]="!isAdmin"><i class="fa-solid fa-plus"></i></button>
+    </div>
+  </header>
+
+  <div class="albums">
+    <div *ngIf="!albums.length">
+      <p>No albums found</p>
+    </div>
+    <div class="album-list">
+      <div *ngFor="let album of albums; let i = index">
+        <app-album-card
+          [album]="album"
+          (delete)="deleteAlbum(album.id)"
+          (edit)="editAlbum(album)"
+          [isAdmin] = "isAdmin"
+        ></app-album-card>
+      </div>
+    </div>
+  </div>
+  <div class="pagination">
+    <button
+      [disabled]="currentPage === 0"
+      (click)="prevPage()"
+    >
+      <i class="fa-solid fa-angles-left"></i>
+    </button>
+    <span>Page {{ currentPage + 1 }} of {{ totalPages }}</span>
+    <button
+      [disabled]="currentPage === totalPages - 1"
+      (click)="nextPage()"
+    >
+      <i class="fa-solid fa-angles-right"></i>
+    </button>
+  </div>
+</div>
+
+<app-album-form
+  [isVisible]="showModal"
+  [album]="selectedAlbum"
+  (close)="onCloseModal()"
+  (save)="onSaveAlbum($event.albumData)">
+</app-album-form>
+

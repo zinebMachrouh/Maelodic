@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {MusicCategory} from '../../models/enums/MusicCategory';
 import {CommonModule} from '@angular/common';
@@ -8,6 +8,7 @@ import {Track} from '../../models/track.model';
 import {TrackService} from "../../services/track.service";
 import {debounceTime, distinctUntilChanged, from} from "rxjs";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
+import {TrackPlayService} from "../../services/track-play.service";
 
 @Component({
   selector: 'app-track-list',
@@ -33,9 +34,12 @@ export class TrackListComponent implements OnInit {
   selectedTrack: Track | null = null;
   searchControl = new FormControl('');
   activeCategory: string = 'All';
+  @Input() username!: string | null;
+  @Input() isAdmin!: boolean;
+  @Input() onPlayTrack!: (track: Track) => void;
 
 
-  constructor(private trackService: TrackService) {}
+  constructor(private trackService: TrackService, private trackPlayService: TrackPlayService) {}
 
   ngOnInit(): void {
     this.musicCategories = Object.values(MusicCategory) as MusicCategory[];
@@ -46,6 +50,10 @@ export class TrackListComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(value => {
       this.searchTracks(value || '');
+    });
+
+    this.trackPlayService.username$.subscribe((username) => {
+      this.username = username;
     });
   }
 
@@ -70,7 +78,7 @@ export class TrackListComponent implements OnInit {
   }
 
   onTrackPlay(track: Track): void {
-    this.playTrack.emit(track);
+    this.trackPlayService.playTrack(track);
   }
 
   openModal(): void {

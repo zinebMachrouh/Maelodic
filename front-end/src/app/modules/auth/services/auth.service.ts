@@ -27,27 +27,19 @@ export class AuthService {
     return this.http.post(`${this.API_URL}/login`, loginRequest).pipe(
       tap((response: any) => {
         const token = response.token;
+        const user = response.username;
         if (token) {
           this.storeToken(token);
           this.decodeAndSetUser(token);
+          this.setUsername(user);
         }
       })
     );
   }
 
   logout(): void {
-    this.http.post(`${this.API_URL}/logout`, {}).subscribe({
-      next: () => {
-        this.clearToken();
-        this.currentUserSubject.next(null);
-      },
-      error: (error) => {
-        console.error('Logout failed:', error);
-        // Still clear local data even if the server request fails
-        this.clearToken();
-        this.currentUserSubject.next(null);
-      }
-    });
+    this.clearToken();
+    this.currentUserSubject.next(null);
   }
 
   getToken(): string | null {
@@ -87,6 +79,23 @@ export class AuthService {
       return true;
     } catch {
       this.clearToken();
+      return false;
+    }
+  }
+
+  private setUsername(user: any) {
+    localStorage.setItem('username', user);
+  }
+
+  public getUsername(): string | null {
+    return localStorage.getItem('username');
+  }
+
+  public isAdmin(): boolean {
+    const user = this.currentUserSubject.getValue();
+    if (user && user.roles) {
+      return user.roles.some((role: { name: string }) => role.name === 'ADMIN');
+    } else {
       return false;
     }
   }
