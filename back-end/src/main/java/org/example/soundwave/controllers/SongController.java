@@ -1,15 +1,22 @@
 package org.example.soundwave.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.example.soundwave.dto.SongDTO;
+import org.example.soundwave.dto.SongRequestDTO;
 import org.example.soundwave.services.SongService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @AllArgsConstructor
@@ -50,10 +57,15 @@ public class SongController {
         return ResponseEntity.ok(songs);
     }
 
-    @PostMapping("/admin/songs")
-    public ResponseEntity<?> addSong(@RequestBody @Valid SongDTO songDTO) {
-        SongDTO createdSong = songService.addSong(songDTO);
-        return ResponseEntity.ok(createdSong);
+    @GetMapping({"user/songs/{id}", "/admin/songs/{id}"})
+    public ResponseEntity<?> getSong(@PathVariable String id) {
+        SongDTO song = songService.getSong(id);
+        return ResponseEntity.ok(song);
+    }
+
+    @PostMapping(value = "/admin/songs")
+    public ResponseEntity<?> addSong(@ModelAttribute SongRequestDTO songDTO, @RequestParam("audioFile") MultipartFile audioFile, @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
+        return ResponseEntity.ok(songService.addSong(songDTO, audioFile, imageFile));
     }
 
     @PutMapping("/admin/songs/{id}")

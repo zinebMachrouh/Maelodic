@@ -19,17 +19,8 @@ export class TracksEffects {
     )
   );
 
-  addTrack$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(TracksActions.addTrack),
-      switchMap(({ track, audioFile, coverImage }) =>
-        from(this.trackService.addTrack(track, audioFile, coverImage)).pipe(
-          map(newTrack => TracksActions.addTrackSuccess({ track: newTrack })),
-          catchError(error => of(TracksActions.addTrackFailure({ error: error.message })))
-        )
-      )
-    )
-  );
+  // @ts-ignore
+
 
   updateTrack$ = createEffect(() =>
     this.actions$.pipe(

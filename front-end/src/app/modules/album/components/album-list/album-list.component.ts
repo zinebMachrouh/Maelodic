@@ -152,7 +152,7 @@ export class AlbumListComponent implements OnInit {
     this.showModal = false;
   }
 
-  onSaveAlbum(albumData: Album) {
+  onSaveAlbum(albumData: any) {
     if (this.selectedAlbum) {
       from(this.albumService.updateAlbum(this.selectedAlbum.id, albumData)).subscribe({
         next: () => {
@@ -164,6 +164,7 @@ export class AlbumListComponent implements OnInit {
         },
       });
     } else {
+      console.log('Adding new album:', albumData);
       from(this.albumService.addAlbum(albumData)).subscribe({
         next: () => {
           this.fetchAlbums();

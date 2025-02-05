@@ -7,11 +7,11 @@
       </button>
     </div>
     <div class="tc-info">
-      <img *ngIf="track.coverImage"  src="{{track.coverImage}}" alt="Track Image" />
-      <img src="assets/piano.jpg" alt="Image" *ngIf="!track.coverImage" />
+      <img *ngIf="track.imageUrl"  src="{{track.imageUrl}}" alt="Track Image" />
+      <img src="assets/piano.jpg" alt="Image" *ngIf="!track.imageUrl" />
       <div class="tc-details">
         <button type="button" (click)="onEdit()">{{track.title}}</button>
-        <span>{{track.artist}}</span>
+        <span>#{{track.trackNumber}}</span>
       </div>
     </div>
     <div class="tc-date">

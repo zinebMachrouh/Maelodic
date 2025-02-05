@@ -12,13 +12,12 @@ import org.example.soundwave.utils.uuidGenerator;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class SongDTO {
+public class SongRequestDTO {
     @Builder.Default
     private String id = uuidGenerator.generate();
 
@@ -34,17 +33,13 @@ public class SongDTO {
     @Size(min = 3, max = 100, message = "description must be between 3 and 100 characters")
     private String description;
 
-    private LocalDateTime addedDate;
-
     @NotNull(message = "category is required")
     @Size(min = 3, max = 50, message = "category must be between 3 and 50 characters")
     private String category;
 
-    private Long duration;
-
     @NotBlank(message = "Album is required")
     private String albumId;
 
-    private String audioUrl;
-    private String imageUrl;
+    private MultipartFile audioUrl;
+    private MultipartFile imageUrl;
 }

@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { MusicCategory } from '../../models/enums/MusicCategory';
 import {Track} from '../../models/track.model';
+import {AlbumService} from "../../../album/services/album.service";
+import {Album} from "../../../album/models/album.model";
 
 @Component({
   selector: 'app-track-form',
@@ -16,20 +18,38 @@ export class TrackFormComponent implements OnChanges {
   @Input() isVisible = false;
   @Input() track: Track | null = null;
   @Output() close = new EventEmitter();
-  @Output() save = new EventEmitter();
+  @Output() save = new EventEmitter<any>();
+
+  public albums : Album[] | [] = [];
+
+  audioFile: File | null = null;
+  imageFile: File | null = null;
+
+  duration: string = '';
+
 
   trackForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private albumService : AlbumService) {
     this.trackForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      artist: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      description: ['', [Validators.minLength(3), Validators.maxLength(500)]],
-      category: ['', Validators.required],
-      image: ['', [Validators.required]],
-      audio: ['', [Validators.required]],
+      trackNumber: ['', [Validators.required, Validators.min(1)]],
+      description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+      category: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      albumId: ['', Validators.required],
+      audioUrl: [null],
+      imageUrl: [null],
     });
-  }
+
+    this.albumService.getAllAlbums().subscribe({
+      next: (response:any) => {
+        this.albums = response;
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+    }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['track'] && this.track) {
@@ -41,15 +61,33 @@ export class TrackFormComponent implements OnChanges {
     this.close.emit();
   }
 
+  onAudioFileSelected(event: any) {
+    const input = event.target as HTMLInputElement;
+    if (input?.files?.length) {
+      this.audioFile = input.files[0];
+
+      const audio = new Audio(URL.createObjectURL(this.audioFile));
+      audio.addEventListener('loadedmetadata', () => {
+        const durationInSeconds = Math.floor(audio.duration);
+        this.duration = durationInSeconds.toString();
+        console.log('Audio Duration:', durationInSeconds);
+      });
+    }  }
+
+  onImageFileSelected(event: any) {
+    this.imageFile = event.target.files[0];
+  }
+
   onSubmit(): void {
-    if (this.trackForm.valid) {
-      const trackData = this.trackForm.value;
-      const audioFile = this.trackForm.get('audio')?.value;
-      const coverImage = this.trackForm.get('image')?.value;
+    const formData = new FormData();
+    Object.keys(this.trackForm.controls).forEach(key => {
+      formData.append(key, this.trackForm.get(key)?.value);
+    });
 
-      this.save.emit({ trackData, audioFile, coverImage });
 
-    }
+    formData.append('duration', this.duration);
+
+    this.save.emit({formData, audioFile: this.audioFile, imageFile: this.imageFile});
   }
 
   /**
@@ -89,15 +127,4 @@ export class TrackFormComponent implements OnChanges {
 
     return null;
   }
-
-  onFileChange(event: Event, field: string): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      this.trackForm.get(field)?.setValue(file);
-    } else {
-      this.trackForm.get(field)?.setValue('');
-    }
-  }
-
 }

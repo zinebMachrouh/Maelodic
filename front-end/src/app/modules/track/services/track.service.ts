@@ -1,53 +1,77 @@
 import { Injectable } from '@angular/core';
 import {Observable, from, firstValueFrom} from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
 import { Track } from '../models/track.model';
-import {IndexedDBService} from '../../../core/services/indexeddb.service';
+import {HttpClient, HttpParams} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
 })
 export class TrackService {
-  constructor(private indexedDBService: IndexedDBService) {}
+  private baseUrl = 'http://localhost:8085/api/v1';
 
-  async getTracks(): Promise<Track[]> {
-    return firstValueFrom(this.indexedDBService.getAllTracks());
+
+  constructor(private http :HttpClient) {}
+
+   getTracks(page: number = 0, size: number = 10): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get(`${this.baseUrl}/user/songs`, { params });
   }
 
-  async getTrack(id: string): Promise<Track> {
-    const track = await firstValueFrom(this.indexedDBService.getTrack(id));
-    if (!track) throw new Error('Track not found');
-    return track;
+   getTrack(id: string): Observable<any>{
+    return this.http.get(`${this.baseUrl}/user/songs/${id}`);
   }
 
-  async addTrack(trackData: Partial<Track>, audioFile: File, coverImage?: File): Promise<Track> {
-    await this.validateAudioFile(audioFile);
-    if (coverImage) {
-      await this.validateImageFile(coverImage);
+  async addTrack(trackData: any, audioFile : File, imageFile : File): Promise<Observable<any>> {
+    const formData = new FormData();
+
+    formData.append('id', crypto.randomUUID());
+    formData.append('title', trackData.get('title'));
+    formData.append('trackNumber', trackData.get('trackNumber') || '0');
+    formData.append('description', trackData.get('description'));
+    formData.append('category', trackData.get('category'));
+    formData.append('duration', trackData.get('duration'));
+    formData.append('albumId', trackData.get('albumId'));
+
+    if (trackData.get('audioUrl') instanceof File) {
+      console.log('audioUrl is a file');
+      formData.append('audioUrl', trackData.get('audioUrl'));
+    }
+    if (trackData.get('imageUrl') instanceof File) {
+      console.log('imageUrl is a file');
+      formData.append('imageUrl', trackData.get('imageUrl'));
     }
 
-    const track: Track = {
-      id: crypto.randomUUID(),
-      title: trackData.title!,
-      artist: trackData.artist!,
-      description: trackData.description,
-      addedDate: new Date(),
-      duration: await this.getAudioDuration(audioFile),
-      category: trackData.category!,
-      fileSize: audioFile.size,
-      audioUrl: URL.createObjectURL(audioFile),
-      ...(coverImage && { coverImage: URL.createObjectURL(coverImage) })
-    };
-
-    return firstValueFrom(this.indexedDBService.addTrack(track, audioFile, coverImage));
+    return this.http.post(`${this.baseUrl}/admin/songs`, formData);
   }
 
-  async updateTrack(id: string, changes: Partial<Track>): Promise<Track> {
-    return firstValueFrom(this.indexedDBService.updateTrack(id, changes));
+  updateTrack(id: string, trackData:any): Observable<any> {
+    const formData = new FormData();
+
+    formData.append('id', crypto.randomUUID());
+    formData.append('title', trackData.get('title'));
+    formData.append('trackNumber', trackData.get('trackNumber') || '0');
+    formData.append('description', trackData.get('description'));
+    formData.append('category', trackData.get('category'));
+    formData.append('duration', trackData.get('duration'));
+    formData.append('albumId', trackData.get('albumId'))
+
+    if (trackData.get('audioUrl') instanceof File) {
+      console.log('audioUrl is a file');
+      formData.append('audioUrl', trackData.get('audioUrl'));
+    }
+    if (trackData.get('imageUrl') instanceof File) {
+      console.log('imageUrl is a file');
+      formData.append('imageUrl', trackData.get('imageUrl'));
+    }
+
+    return this.http.put(`${this.baseUrl}/admin/songs/${id}`, formData);
   }
 
-  async deleteTrack(id: string): Promise<void> {
-    return firstValueFrom(this.indexedDBService.deleteTrack(id));
+  deleteTrack(id: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/admin/songs/${id}`);
   }
 
   private validateAudioFile(file: File): Observable<void> {
@@ -72,20 +96,4 @@ export class TrackService {
     }
   }
 
-  private getAudioDuration(file: File): Promise<number> {
-    return new Promise((resolve, reject) => {
-      const audio = new Audio();
-      audio.src = URL.createObjectURL(file);
-
-      audio.addEventListener('loadedmetadata', () => {
-        resolve(audio.duration);
-        URL.revokeObjectURL(audio.src);
-      });
-
-      audio.addEventListener('error', () => {
-        reject(new Error('Error loading audio file'));
-        URL.revokeObjectURL(audio.src);
-      });
-    });
-  }
 }

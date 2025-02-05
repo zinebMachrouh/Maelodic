@@ -1,14 +1,15 @@
 import {MusicCategory} from './enums/MusicCategory';
+import {Album} from "../../album/models/album.model";
 
 export interface Track {
   id: string;
   title: string;
-  artist: string;
+  trackNumber: number;
   description?: string;
-  addedDate: Date;
+  addedDate: string;
   duration: number;
   category: MusicCategory;
-  coverImage?: string;
+  imageUrl?: string;
   audioUrl: string;
-  fileSize: number;
+  albumId : string
 }
