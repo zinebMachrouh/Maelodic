@@ -7,6 +7,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,9 +20,19 @@ public class Song {
 
     private String title;
 
-    private Integer duration;
-
     private Integer trackNumber;
+
+    private String description;
+
+    private LocalDateTime addedDate;
+
+    private String category;
+
+    private Long duration;
+
+    private String audioUrl;
+
+    private String imageUrl;
 
     @DocumentReference(lazy = true)
     private Album album;

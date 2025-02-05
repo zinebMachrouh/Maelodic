@@ -22,7 +22,8 @@ export class TrackCardComponent implements OnInit, OnDestroy {
   formattedDuration: string = '00:00';
   private interval: any;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
     this.interval = setInterval(() => {
@@ -64,10 +65,15 @@ export class TrackCardComponent implements OnInit, OnDestroy {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }
 
-  formatCreationDate(date: Date): string {
+  formatCreationDate(date: string): string {
     const now = new Date();
-    const diffInMilliseconds = now.getTime() - date.getTime();
+    const newDate = new Date(date);
 
+    if (isNaN(newDate.getTime())) {
+      return 'Invalid date';
+    }
+
+    const diffInMilliseconds = now.getTime() - newDate.getTime();
     const diffInMinutes = Math.floor(diffInMilliseconds / (1000 * 60));
     const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
     const diffInDays = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));

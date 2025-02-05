@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @AllArgsConstructor
@@ -25,6 +27,12 @@ public class AlbumController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Page<AlbumDTO> albums = albumService.listAlbums(PageRequest.of(page, size));
+        return ResponseEntity.ok(albums);
+    }
+
+    @GetMapping({"/user/allAlbums", "/admin/allAlbums"})
+    public ResponseEntity<?> listAllAlbums() {
+        List<AlbumDTO> albums = albumService.listAllAlbum();
         return ResponseEntity.ok(albums);
     }
 

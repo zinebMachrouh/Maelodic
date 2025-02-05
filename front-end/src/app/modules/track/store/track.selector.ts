@@ -44,7 +44,8 @@ export const selectFilteredTracks = createSelector(
     const lowercaseQuery = query.toLowerCase();
     return tracks.filter(track =>
       track.title.toLowerCase().includes(lowercaseQuery) ||
-      track.artist.toLowerCase().includes(lowercaseQuery)
+      // @ts-ignore
+      track.description.toLowerCase().includes(lowercaseQuery)
     );
   }
 );

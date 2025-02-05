@@ -9,6 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class AlbumServiceImpl implements AlbumService {
@@ -19,6 +22,14 @@ public class AlbumServiceImpl implements AlbumService {
     public Page<AlbumDTO> listAlbums(Pageable pageable) {
         return albumRepository.findAll(pageable)
                 .map(this::mapToDTO);
+    }
+
+    @Override
+    public List<AlbumDTO> listAllAlbum() {
+        return albumRepository.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

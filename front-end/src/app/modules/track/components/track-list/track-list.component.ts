@@ -60,10 +60,12 @@ export class TrackListComponent implements OnInit {
   getAllTracks(): void {
     this.activeCategory = 'All';
     from(this.trackService.getTracks()).subscribe({
-      next: (tracks: Track[]) => {
-        this.tracks = tracks;
-        this.originalTracks = [...tracks];
-        this.tracksCount = tracks.length;
+      next: (response) => {
+        this.tracks = response.content;
+        this.originalTracks = [...this.tracks];
+        this.tracksCount = this.tracks.length;
+
+        console.log('Tracks:', this.tracks);
       },
       error: (error: any) => {
         console.error('Error:', error);
@@ -99,6 +101,8 @@ export class TrackListComponent implements OnInit {
         console.error('Error:', error);
       },
     });
+
+    this.getAllTracks();
   }
 
   searchTracks(searchTerm: string): void {
@@ -110,7 +114,6 @@ export class TrackListComponent implements OnInit {
     const term = searchTerm.toLowerCase();
     this.tracks = this.originalTracks.filter(track =>
       track.title.toLowerCase().includes(term) ||
-      track.artist.toLowerCase().includes(term) ||
       // @ts-ignore
       track.description.toLowerCase().includes(term)
     );
@@ -121,9 +124,10 @@ export class TrackListComponent implements OnInit {
     this.tracks = this.originalTracks.filter(track => track.category === category);
   }
 
-  onSaveTrack(trackData: Partial<Track>, audioFile: File, coverImage?: File) {
+  onSaveTrack(event: { formData: FormData, audioFile: File, imageFile: File }): void {
+    const { formData, audioFile, imageFile } = event;
     if (this.selectedTrack) {
-      from(this.trackService.updateTrack(this.selectedTrack.id, trackData)).subscribe({
+      from(this.trackService.updateTrack(this.selectedTrack.id, formData)).subscribe({
         next: () => {
           this.getAllTracks();
           this.showModal = false;
@@ -133,7 +137,7 @@ export class TrackListComponent implements OnInit {
         },
       });
     } else {
-      from(this.trackService.addTrack(trackData, audioFile, coverImage)).subscribe({
+      from(this.trackService.addTrack(formData, audioFile, imageFile)).subscribe({
         next: () => {
           this.getAllTracks();
           this.showModal = false;
@@ -144,4 +148,6 @@ export class TrackListComponent implements OnInit {
       });
     }
   }
+
+  protected readonly File = File;
 }

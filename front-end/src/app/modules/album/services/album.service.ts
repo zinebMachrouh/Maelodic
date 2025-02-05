@@ -19,6 +19,10 @@ export class AlbumService {
     return this.http.get(`${this.baseUrl}/user/albums`, { params });
   }
 
+  getAllAlbums(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/user/allAlbums`);
+  }
+
   searchAlbumsByTitle(
     title: string,
     page: number = 0,

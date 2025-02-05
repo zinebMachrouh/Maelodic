@@ -1,9 +1,9 @@
 <section id="player">
   <div class="player" *ngIf="track">
-    <img src="{{track.coverImage}}" alt="Track Image" class="p-img" />
+    <img src="{{track.imageUrl}}" alt="Track Image" class="p-img" />
     <div class="p-info">
       <span>{{ track.title }}</span>
-      <span>{{ track.artist }}</span>
+      <span>#{{track.trackNumber}}</span>
     </div>
     <div class="p-track">
       <div class="p-controls">

@@ -46,8 +46,9 @@ export class AlbumFormComponent implements OnChanges{
 
   onSubmit(): void {
     if (this.albumForm.valid) {
-      const trackData = {title: this.albumForm.get('title')?.value, artist: this.albumForm.get('artist')?.value, year: this.albumForm.get('year')?.value};
-      this.save.emit({ trackData });
+      const { title, artist, year } = this.albumForm.value;
+      const albumData = { title, artist, year };
+      this.save.emit({ albumData });
     }
   }
 }
